@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Twitter KW</title>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-7SV734498Y"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-7SV734498Y');
+</script>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Twitter KW</h1>
+        </div>
+    </header>
+    <main>
+        <div class="container">
+            <section class="tweet-box">
+                <div class="tweet-input">
+                    <textarea id="tweet-text" placeholder="Apa yang sedang Anda pikirkan?"></textarea>
+                    <button id="tweet-button">Tweet</button>
+                </div>
+            </section>
+            <section class="tweets">
+                <!-- Tweet items will be added here -->
+            </section>
+        </div>
+    </main>
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 Tz Inc</p>
+        </div>
+    </footer>
+    <script>
+        const tweetButton = document.getElementById('tweet-button');
+        const tweetText = document.getElementById('tweet-text');
+        const tweetsContainer = document.querySelector('.tweets');
+    
+        // Fungsi untuk menyimpan tweet ke localStorage
+        function saveTweet(tweetContent) {
+            const savedTweets = JSON.parse(localStorage.getItem('tweets')) || [];
+            savedTweets.push(tweetContent);
+            localStorage.setItem('tweets', JSON.stringify(savedTweets));
+        }
+    
+        // Fungsi untuk memuat tweet dari localStorage
+        function loadTweets() {
+            const savedTweets = JSON.parse(localStorage.getItem('tweets')) || [];
+            savedTweets.forEach((tweetContent) => {
+                createTweet(tweetContent);
+            });
+        }
+    
+        // Fungsi untuk membuat elemen tweet
+        function createTweet(tweetContent) {
+            const tweetElement = document.createElement('div');
+            tweetElement.classList.add('tweet');
+            tweetElement.innerHTML = `
+                <p>${tweetContent}</p>
+                <button class="delete-button">Hapus</button>
+            `;
+            tweetsContainer.appendChild(tweetElement);
+    
+            // Tambahkan event listener untuk menghapus tweet
+            const deleteButton = tweetElement.querySelector('.delete-button');
+            deleteButton.addEventListener('click', function () {
+                tweetsContainer.removeChild(tweetElement);
+                removeTweet(tweetContent);
+            });
+        }
+    
+        // Fungsi untuk menghapus tweet dari localStorage
+        function removeTweet(tweetContent) {
+            const savedTweets = JSON.parse(localStorage.getItem('tweets')) || [];
+            const updatedTweets = savedTweets.filter((tweet) => tweet !== tweetContent);
+            localStorage.setItem('tweets', JSON.stringify(updatedTweets));
+        }
+    
+        // Memuat tweet saat halaman dimuat
+        loadTweets();
+    
+        // Event listener untuk tombol "Tweet"
+        tweetButton.addEventListener('click', function () {
+            const tweetContent = tweetText.value;
+    
+            if (tweetContent.trim() !== '') {
+                createTweet(tweetContent);
+                saveTweet(tweetContent);
+    
+                // Hapus teks dari textarea setelah mengirim tweet
+                tweetText.value = '';
+            }
+        });
+    </script>
+    
+    
+</body>
+</html>
